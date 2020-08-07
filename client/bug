@@ -1,0 +1,35 @@
+g++ -std=c++11 -o client_test Login.o NewOrder.o CancelOrder.o TCPClient.o TCPServer.o -L./include -lpthread
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/crt1.o：在函数‘_start’中：
+(.text+0x20)：对‘main’未定义的引用
+Login.o：在函数‘google::protobuf::Arena::AllocHook(std::type_info const*, unsigned long) const’中：
+Login.cpp:(.text._ZNK6google8protobuf5Arena9AllocHookEPKSt9type_infom[_ZNK6google8protobuf5Arena9AllocHookEPKSt9type_infom]+0x3d)：对‘google::protobuf::Arena::OnArenaAllocation(std::type_info const*, unsigned long) const’未定义的引用
+Login.o：在函数‘google::protobuf::internal::ArenaStringPtr::CreateInstance(google::protobuf::Arena*, std::string const*)’中：
+Login.cpp:(.text._ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs[_ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs]+0x56)：对‘google::protobuf::internal::LogMessage::LogMessage(google::protobuf::LogLevel, char const*, int)’未定义的引用
+Login.cpp:(.text._ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs[_ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs]+0x6f)：对‘google::protobuf::internal::LogMessage::operator<<(char const*)’未定义的引用
+Login.cpp:(.text._ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs[_ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs]+0x8a)：对‘google::protobuf::internal::LogFinisher::operator=(google::protobuf::internal::LogMessage&)’未定义的引用
+Login.cpp:(.text._ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs[_ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs]+0xa1)：对‘google::protobuf::internal::LogMessage::~LogMessage()’未定义的引用
+Login.cpp:(.text._ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs[_ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs]+0x1f9)：对‘google::protobuf::Arena::AllocateAlignedNoHook(unsigned long)’未定义的引用
+Login.cpp:(.text._ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs[_ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs]+0x21c)：对‘google::protobuf::internal::ArenaImpl::AllocateAlignedAndAddCleanup(unsigned long, void (*)(void*))’未定义的引用
+Login.cpp:(.text._ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs[_ZN6google8protobuf8internal14ArenaStringPtr14CreateInstanceEPNS0_5ArenaEPKSs]+0x2a1)：对‘google::protobuf::internal::LogMessage::~LogMessage()’未定义的引用
+Login.o：在函数‘google::protobuf::internal::GetEmptyStringAlreadyInited()’中：
+Login.cpp:(.text._ZN6google8protobuf8internal27GetEmptyStringAlreadyInitedEv[_ZN6google8protobuf8internal27GetEmptyStringAlreadyInitedEv]+0x5)：对‘google::protobuf::internal::fixed_address_empty_string’未定义的引用
+Login.o：在函数‘GatewayProto::Standard_Header::Standard_Header()’中：
+Login.cpp:(.text._ZN12GatewayProto15Standard_HeaderC2Ev[_ZN12GatewayProto15Standard_HeaderC5Ev]+0x19)：对‘GatewayProto::Standard_Header::Standard_Header(google::protobuf::Arena*)’未定义的引用
+Login.o：在函数‘GatewayProto::Standard_Message::set_allocated_standardheader(GatewayProto::Standard_Header*)’中：
+Login.cpp:(.text._ZN12GatewayProto16Standard_Message28set_allocated_standardheaderEPNS_15Standard_HeaderE[_ZN12GatewayProto16Standard_Message28set_allocated_standardheaderEPNS_15Standard_HeaderE]+0x40)：对‘GatewayProto::Standard_Header::~Standard_Header()’未定义的引用
+Login.o：在函数‘GatewayProto::Standard_Message::set_allocated_logon(GatewayProto::Logon*)’中：
+Login.cpp:(.text._ZN12GatewayProto16Standard_Message19set_allocated_logonEPNS_5LogonE[_ZN12GatewayProto16Standard_Message19set_allocated_logonEPNS_5LogonE]+0x40)：对‘GatewayProto::Logon::~Logon()’未定义的引用
+Login.o：在函数‘GatewayProto::Standard_Header* google::protobuf::internal::GetOwnedMessage<GatewayProto::Standard_Header>(google::protobuf::Arena*, GatewayProto::Standard_Header*, google::protobuf::Arena*)’中：
+Login.cpp:(.text._ZN6google8protobuf8internal15GetOwnedMessageIN12GatewayProto15Standard_HeaderEEEPT_PNS0_5ArenaES6_S8_[_ZN6google8protobuf8internal15GetOwnedMessageIN12GatewayProto15Standard_HeaderEEEPT_PNS0_5ArenaES6_S8_]+0x27)：对‘google::protobuf::internal::GetOwnedMessageInternal(google::protobuf::Arena*, google::protobuf::MessageLite*, google::protobuf::Arena*)’未定义的引用
+Login.o：在函数‘GatewayProto::Logon* google::protobuf::internal::GetOwnedMessage<GatewayProto::Logon>(google::protobuf::Arena*, GatewayProto::Logon*, google::protobuf::Arena*)’中：
+Login.cpp:(.text._ZN6google8protobuf8internal15GetOwnedMessageIN12GatewayProto5LogonEEEPT_PNS0_5ArenaES6_S8_[_ZN6google8protobuf8internal15GetOwnedMessageIN12GatewayProto5LogonEEEPT_PNS0_5ArenaES6_S8_]+0x27)：对‘google::protobuf::internal::GetOwnedMessageInternal(google::protobuf::Arena*, google::protobuf::MessageLite*, google::protobuf::Arena*)’未定义的引用
+NewOrder.o：在函数‘GatewayProto::Standard_Message::set_allocated_new_order(GatewayProto::New_Order*)’中：
+NewOrder.cpp:(.text._ZN12GatewayProto16Standard_Message23set_allocated_new_orderEPNS_9New_OrderE[_ZN12GatewayProto16Standard_Message23set_allocated_new_orderEPNS_9New_OrderE]+0x40)：对‘GatewayProto::New_Order::~New_Order()’未定义的引用
+NewOrder.o：在函数‘GatewayProto::New_Order* google::protobuf::internal::GetOwnedMessage<GatewayProto::New_Order>(google::protobuf::Arena*, GatewayProto::New_Order*, google::protobuf::Arena*)’中：
+NewOrder.cpp:(.text._ZN6google8protobuf8internal15GetOwnedMessageIN12GatewayProto9New_OrderEEEPT_PNS0_5ArenaES6_S8_[_ZN6google8protobuf8internal15GetOwnedMessageIN12GatewayProto9New_OrderEEEPT_PNS0_5ArenaES6_S8_]+0x27)：对‘google::protobuf::internal::GetOwnedMessageInternal(google::protobuf::Arena*, google::protobuf::MessageLite*, google::protobuf::Arena*)’未定义的引用
+CancelOrder.o：在函数‘GatewayProto::Standard_Message::set_allocated_cancel_order(GatewayProto::Cancel_Order*)’中：
+CancelOrder.cpp:(.text._ZN12GatewayProto16Standard_Message26set_allocated_cancel_orderEPNS_12Cancel_OrderE[_ZN12GatewayProto16Standard_Message26set_allocated_cancel_orderEPNS_12Cancel_OrderE]+0x40)：对‘GatewayProto::Cancel_Order::~Cancel_Order()’未定义的引用
+CancelOrder.o：在函数‘GatewayProto::Cancel_Order* google::protobuf::internal::GetOwnedMessage<GatewayProto::Cancel_Order>(google::protobuf::Arena*, GatewayProto::Cancel_Order*, google::protobuf::Arena*)’中：
+CancelOrder.cpp:(.text._ZN6google8protobuf8internal15GetOwnedMessageIN12GatewayProto12Cancel_OrderEEEPT_PNS0_5ArenaES6_S8_[_ZN6google8protobuf8internal15GetOwnedMessageIN12GatewayProto12Cancel_OrderEEEPT_PNS0_5ArenaES6_S8_]+0x27)：对‘google::protobuf::internal::GetOwnedMessageInternal(google::protobuf::Arena*, google::protobuf::MessageLite*, google::protobuf::Arena*)’未定义的引用
+collect2: 错误：ld 返回 1
+make: *** [client_test] 错误 1

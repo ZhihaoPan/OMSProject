@@ -1,0 +1,180 @@
+syntax = "proto2";
+package GatewayProto;
+
+message Standard_Header
+{
+    required int32 MsgType = 1;
+	required int32 BodyLength = 2;
+};
+
+message Logon
+{
+	required string SenderCompID = 1;
+	required string TargetCompID = 2;
+	required uint32 HeartBtInt = 3;
+	required string Password = 4;
+	required string DefaultApplVerID = 5;
+};
+
+message Logout
+{
+	required int32 SessionStatus = 1;
+	required string Text = 2;
+};
+
+message Heart_Beat
+{
+	optional string Text = 1;
+};
+
+message New_Order
+{
+	required string ApplID = 1;
+	required string SubmittingPBUID = 2;
+	required string SecurityID = 3;
+	required string SecurityIDSource = 4;
+	required uint32 OwnerType = 5;
+	required string ClearingFirm = 6;
+	required string TransactTime = 7;
+	required string UserInfo = 8;
+	required string ClOrdID = 9;
+	required string AccountID = 10;
+	required string BranchID = 11;
+	required string OrderRestrictions = 12;
+	required string Side = 13;
+	required string OrdType = 14;
+	required uint32 OrderQty = 15;
+	required float Price = 16;
+	optional Extend_Fields ExtendFields = 17;
+};
+
+message Executive_Report
+{
+	required int32 PartitionNo = 2;
+	required uint32 ReportIndex = 3;
+	required string ApplID = 4;
+	required string ReportingPBUID = 5;
+	required string SubmittingPBUID = 6;
+	required string SecurityID = 7;
+	required string SecurityIDSource = 8;
+	required uint32 OwnerType = 9;
+	required string ClearingFirm = 10;
+	required string TransactTime = 11;
+	required string UserInfo = 12;
+	required string OrderID = 13;
+	required string ClOrdID = 14;
+	required string OrigClOrdID = 15;
+	required string ExecID = 16;
+	required string ExecType = 17;
+	required string OrdStatus = 18;
+	required string OrdRejReason = 19;
+	required int32 LeavesQty = 20;
+	required int32 CumQty = 21;
+	required string Side = 22;
+	required string OrdType = 23;
+	required uint32 OrderQty = 24;
+	required float Price = 25;
+	required string AccountID = 26;
+	required string BranchID = 27;
+	required string OrderRestrictions = 28;
+	optional Extend_Fields ExtendFields = 29;
+}
+
+message Transaction_Report
+{
+	required int32 PartitionNo = 2;
+	required uint32 ReportIndex = 3;
+	required string ApplID = 4;
+	required string ReportingPBUID = 5;
+	required string SubmittingPBUID = 6;
+	required string SecurityID = 7;
+	required string SecurityIDSource = 8;
+	required uint32 OwnerType = 9;
+	required string ClearingFirm = 10;
+	required string TransactTime = 11;
+	required string UserInfo = 12;
+	required string OrderID = 13;
+	required string ClOrdID = 14;
+	required string ExecID = 15;
+	required string ExecType = 16;
+	required string OrdStatus = 17;
+	required float LastPx = 18;
+	required int32 LastQty = 19;
+	required int32 LeavesQty = 20;
+	required int32 CumQty = 21;
+	required string Side = 22;
+	required string AccountID = 23;
+	required string BranchID = 24;
+	optional Extend_Fields ExtendFields = 25;
+}
+
+message Cancel_Order
+{
+	required string ApplID = 2;
+	required string SubmittingPBUID = 3;
+	required string SecurityID = 4;
+	required string SecurityIDSource = 5;
+	required uint32 OwnerType = 6;
+	required string ClearingFirm = 7;
+	required string TransactTime = 8;
+    required string UserInfo = 9;
+	required string ClOrdID = 10;
+	required string OrigClOrdID = 11;
+	required string Side = 12;
+	required string OrderID = 13;
+	required uint32 OrderQty = 14;
+}
+
+message Cancel_Order_Fail
+{
+	required int32 PartitionNo = 2;
+	required uint32 ReportIndex = 3;
+	required string ApplID = 4;
+	required string ReportingPBUID = 5;
+	required string SubmittingPBUID = 6;
+	required string SecurityID = 7;
+	required string SecurityIDSource = 8;
+	required uint32 OwnerType = 9;
+	required string ClearingFirm = 10;
+	required string TransactTime = 11;
+	required string UserInfo = 12;
+	required string ClOrdID = 13;
+	required string ExecID = 14;
+	required string OrigClOrdID = 15;
+	required string Side = 16;
+	required string OrdStatus = 17;
+	required uint32 CxlRejReason = 18;
+	required string RejectText = 19;
+	required string OrderID = 20;
+}
+
+message Extend_Fields
+{
+	optional float StopPx = 1;
+	optional float MinQty = 2;
+	optional uint32 MaxPriceLevels = 3;
+	optional string TimeInForce = 4;
+	optional string CashMargin = 5;
+};
+
+
+message Retransmission_Report
+{
+	required uint32 NoPartitions = 2;
+	repeated int32 PartitionNo = 3;
+	repeated uint32 ReportIndex = 4;
+}
+
+message Standard_Message
+{
+    required Standard_Header StandardHeader = 1;
+	optional Logon logon = 2;
+	optional Logout logout = 3;
+	optional Heart_Beat heart_beat = 4;
+	optional New_Order new_order = 5;
+	optional Executive_Report executive_report = 6;
+	optional Transaction_Report transaction_report = 7;
+    optional Cancel_Order cancel_order = 8;
+	optional Cancel_Order_Fail cancel_order_fail = 9;
+    optional Retransmission_Report retransmission_report = 10;
+}
