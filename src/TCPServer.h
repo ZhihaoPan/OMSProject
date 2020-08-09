@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -65,6 +66,8 @@ public:
 
     std::vector<SocketMessage*> getMessage();
 
+    std::set<SocketMessage*> getTimeoutfd();
+
     std::string get_ip_addr(int id);
 
     int get_last_closed_socket();
@@ -73,20 +76,25 @@ public:
     
     void closed();
 
+    static pthread_mutex_t mt_newsock, mt_timeout, mt_message;
+    static pthread_cond_t cond;
 private:
     int sockfd, n, pid;
     struct sockaddr_in server_address;
     struct sockaddr_in client_address;
     pthread_t server_thread[MAX_CLIENT];
 
-    static std::vector<SocketMessage*> newsockfd; // 存放接入的客户端信息
+    // 存放接入的客户端信息
+    static std::vector<SocketMessage*> newsockfd; 
+    // 存放超时的客户端信息 超时判断通过sockopt来设置超时时间
+    static std::set<SocketMessage*> timeoutfd; 
+    // 存放客户端发来的消息
+    static std::vector<SocketMessage*> Message; 
     static char  msg[MAXPACKSIZE];
-    static std::vector<SocketMessage*> Message; // 存放客户端发来的消息
-
+    // 条件变量用于提示服务端处理超时的socket
     static bool is_onlined;
     static int last_closed_id;
     static int num_client;
-    static std::mutex mt;
     static void* Task(void* argv);
 };
 

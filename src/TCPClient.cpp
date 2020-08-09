@@ -94,16 +94,18 @@ int TCPClient::Send(char* data)
 std::string TCPClient::receive(int size)
 {
     char buff[size];
-    memset(buff, 0, size);
+    // memset(buff, 0, size);
 
     std::string res;
-    if (recv(sockfd, buff, size, 0) < 0)
+    int length = recv(sockfd, buff, size, 0);
+    if (length < 0)
     {
         spdlog::error("[TCPClient] recv failed.");
         return "";
     }
-    buff[size - 1] = '\0';
+    buff[length] = '0';
     res = std::string(buff);
+    // spdlog::info("[TCPClient] recv msg: " + res + std::to_string(length));
     return res;
 }
 

@@ -1,9 +1,9 @@
 CC = g++ -std=c++11
 FLAGS = -lpthread -lprotobuf
 OUT = client_test
-SRC = client_test.cpp Login.cpp NewOrder.cpp CancelOrder.cpp ../protobuf/Gateway.pb.cc ../src/TCPClient.cpp ../src/TCPServer.cpp
+SRC = client_test.cpp Login.cpp NewOrder.cpp CancelOrder.cpp ../protobuf/Gateway.pb.cc ../src/TCPClient.cpp 
 OBJ = client_test.o Login.o NewOrder.o CancelOrder.o 
-OTHEROBJ = ../src/TCPClient.o ../src/TCPServer.o
+OTHEROBJ = ../src/TCPClient.o 
 LIB_PATH = -I../include 
 
 $(OUT): $(OBJ) $(OTHEROBJ)

@@ -25,7 +25,7 @@ public:
 
     int Send(char* data);
 
-    std::string receive(int size = 4096);
+    std::string receive(int size = 40960);
 
     void closed();
 

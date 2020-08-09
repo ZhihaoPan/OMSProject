@@ -58,6 +58,7 @@ int parse_reply(const std::string reply)
     }
     else if (standard_header.msgtype() == MSGTYPE::LOGOUT)
     {
+        spdlog::info("[parse_reply] Get Logout");
         GatewayProto::Logout logout = standard_message.logout();
         return -1;
     }
@@ -66,22 +67,27 @@ int parse_reply(const std::string reply)
         GatewayProto::Transaction_Report transaction_report = standard_message.transaction_report();
         if (transaction_report.ordstatus() == "Partially Filled")
         {
+            spdlog::info("[parse_reply] get Paritially Filled.");
             return 1;
         }
         else if (transaction_report.ordstatus() == "Filled")
         {
+            spdlog::info("[parse_reply] get All Filled.");
             return 0;
         }
     }
     else if (standard_header.msgtype() == MSGTYPE::EXECUTIVE_REPORT)
     {
         GatewayProto::Executive_Report executive_report = standard_message.executive_report();
+        spdlog::info("[parse_reply] receive EXECUTIVE_REPORT.");
         if (executive_report.ordstatus() == "New")
         {
+            spdlog::info("[parse_reply] EXECUTIVE_REPORT: Accept.");
             return 1;
         }
         else if (executive_report.ordstatus() == "Rejected")
         {
+            spdlog::info("[parse_reply] EXECUTIVE_REPORT: Rejected.");
             return -1;
         }
     }
@@ -90,6 +96,7 @@ int parse_reply(const std::string reply)
         GatewayProto::Cancel_Order_Fail cancel_order_fail = standard_message.cancel_order_fail();
         if (cancel_order_fail.ordstatus() == "Rejected")
         {
+            spdlog::info("[parse_reply] Cancel Order Rejected.");
             return -1;
         }
     }
@@ -120,22 +127,23 @@ int main(int argc, char *argv[])
         int retry_times = 3;
         while (res != 0 && retry_times > 0)
         {
+            // usleep(2000000);
             retry_times--;
             spdlog::info("[Client] Sending message for logining.");
             res = tcp.Send(msg);
             spdlog::info(msg.c_str());
             if (res == -1)
             {
-                spdlog::error("[Client] tcp Send failed.");
-                usleep(3000);
+                spdlog::error("[Client] tcp Send failed res == -1.");
+                // dusleep(3000);
                 continue;
             }
             reply = tcp.receive();
             if (reply == "")
             {
                 res = 1;
-                spdlog::error("[Client] tcp receive failed.");
-                usleep(3000);
+                spdlog::error("[Client] tcp receive failed reply == NULL.");
+                // usleep(3000);
                 continue;
             }
             spdlog::info("[Client] get reply message:" + reply);
@@ -143,7 +151,7 @@ int main(int argc, char *argv[])
             if (res == 1)
             {
                 spdlog::error("[Client] receive logout when trying logon.");
-                usleep(3000);
+                // usleep(3000);
                 return 0;
             }
         }
@@ -155,46 +163,49 @@ int main(int argc, char *argv[])
 
         if (res == 0)
         {
-            spdlog::info("Connect to TGW successfully.");
+            spdlog::info("[Client] Connect to TGW successfully.");
         }
     }
 
-    // // 测试发出新订单
+    // 测试发出新订单
+    spdlog::info("[Client] 测试发出新订单.");
+    {
+        NewOrderMessage new_order_message(config);
+        GatewayProto::Standard_Message *standard_message = new GatewayProto::Standard_Message();
+        new_order_message.set_config(standard_message);
 
-    // {
-    //     NewOrderMessage new_order_message(config);
-    //     GatewayProto::Standard_Message *standard_message = NULL;
-    //     new_order_message.set_config(standard_message);
+        std::string msg;
+        int res;
+        standard_message->SerializeToString(&msg);
 
-    //     std::string msg;
-    //     int res;
-    //     standard_message->SerializeToString(&msg);
-    //     res = tcp.Send(msg);
-    //     if (res == -1)
-    //     {
-    //         spdlog::error("[Client] tcp Send NewOrderMessage failed.");
-    //     }
+        standard_message->ParseFromString(msg);
+        res = tcp.Send(msg);
+        if (res == -1)
+        {
+            spdlog::error("[Client] tcp Send NewOrderMessage failed.");
+        }
 
-    //         // 解析执行报告
-    //     reply = tcp.receive();
-    //     if (reply == "")
-    //     {
-    //         spdlog::error("[Client] tcp receive NewOrderReply failed.");
-    //     }
+            // 解析执行报告
+        reply = tcp.receive(40960);
+        if (reply == "")
+        {
+            spdlog::error("[Client] tcp receive NewOrderReply failed.");
+        }
 
-    //     res = parse_reply(reply);
-    //     if (res == -1 || res == 0)
-    //     {
-    //         spdlog::error("[Client] receive NewOrderReply, fail to execute order.");
-    //     }
-    //     else
-    //     {
-    //         // 解析成交报告
-    //         reply = tcp.receive();
-    //         res =parse_reply(reply);
-    //     }
-    // }
-
+        res = parse_reply(reply);
+        if (res == -1 || res == 0)
+        {
+            spdlog::error("[Client] receive NewOrderReply, fail to execute order.");
+        }
+        else
+        {
+            // 解析成交报告
+            reply = tcp.receive(40960);
+            spdlog::info("[Client] receive transaction message: " + reply);
+            res =parse_reply(reply);
+        }
+    }
+    spdlog::info("[Client] 测试发出新订单结束.");
     // {
     //     CancelOrderMessage cancel_order_message(config);
     //     GatewayProto::Standard_Message *standard_message = NULL;

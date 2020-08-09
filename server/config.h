@@ -19,11 +19,11 @@ enum MSGTYPE
 
 struct Extend_Fields
 {
-    float StopPx;
-    float MinQty;
-    int MaxPriceLevels;
-    std::string TimeInForce;
-    std::string CashMargin;  
+    float StopPx = 0.0;
+    float MinQty = 0.0;
+    int MaxPriceLevels = 0;
+    std::string TimeInForce = "test";
+    std::string CashMargin = "test";  
 };
 
 struct Config
@@ -59,8 +59,8 @@ public:
     int MsgType = MSGTYPE::LOGOUT;
     int BodyLength = 2;
     // Logout字段
-    int SessionStatus;
-    std::string Text;
+    int SessionStatus = 1;
+    std::string Text = "test";
 };
 
 class HeartBeatConfig
@@ -82,33 +82,33 @@ public:
     int MsgType = MSGTYPE::EXECUTIVE_REPORT;
     int BodyLength = 17;
 
-    int PartitionNo;
-    int ReportIndex;
-    std::string ApplID;
-    std::string ReportingPBUID;
-    std::string SubmittingPBUID;
-    std::string SecurityID;
-    std::string SecurityIDSource;
-    int OwnerType;
-    std::string ClearingFirm;
-    std::string TransactTime;
-    std::string UserInfo;
-    std::string OrderID;
-    std::string ClOrdID;
-    std::string OrigClOrdID;
-    std::string ExecID;
-    std::string ExecType;
-    std::string OrdStatus;
-    std::string OrdRejReason;
-    int LeavesQty;
-    int CumQty;
-    std::string Side;
-    std::string OrdType;
-    int OrderQty;
-    float Price;
-    std::string AccountID;
-    std::string BranchID;
-    std::string OrderRestrictions;
+    int PartitionNo = 999;
+    int ReportIndex = 1;
+    std::string ApplID = "test";
+    std::string ReportingPBUID = "test";
+    std::string SubmittingPBUID = "test";
+    std::string SecurityID = "test";
+    std::string SecurityIDSource = "test";
+    int OwnerType = 1;
+    std::string ClearingFirm = "test";
+    std::string TransactTime = "test";
+    std::string UserInfo = "test";
+    std::string OrderID = "test";
+    std::string ClOrdID = "test";
+    std::string OrigClOrdID = "test";
+    std::string ExecID = "test";
+    std::string ExecType = "test";
+    std::string OrdStatus = "test";
+    std::string OrdRejReason = "test";
+    int LeavesQty = 1;
+    int CumQty = 1;
+    std::string Side = "test";
+    std::string OrdType = "test";
+    int OrderQty = 1;
+    float Price = 0.0;
+    std::string AccountID = "test";
+    std::string BranchID = "test";
+    std::string OrderRestrictions = "test";
     Extend_Fields ExtendFields;
 };
 
@@ -121,29 +121,29 @@ public:
     int MsgType = MSGTYPE::NEW_ORDER_REPLY;
     int BodyLength = 23;
 
-    int PartitionNo;
-    int ReportIndex;
-    std::string ApplID;
-    std::string ReportingPBUID;
-    std::string SubmittingPBUID;
-    std::string SecurityID;
-    std::string SecurityIDSource;
-    int OwnerType;
-    std::string ClearingFirm;
-    std::string TransactTime;
-    std::string UserInfo;
-    std::string OrderID;
-    std::string ClOrdID;
-    std::string ExecID;
-    std::string ExecType;
-    std::string OrdStatus;
-    float LastPx;
-    int LastQty;
-    int LeavesQty;
-    int CumQty;
-    std::string Side;
-    std::string AccountID;
-    std::string BranchID;
+    int PartitionNo = 1;
+    int ReportIndex = 1;
+    std::string ApplID = "test";
+    std::string ReportingPBUID = "test";
+    std::string SubmittingPBUID = "test";
+    std::string SecurityID = "";
+    std::string SecurityIDSource = "test";
+    int OwnerType = 1;
+    std::string ClearingFirm = "test";
+    std::string TransactTime = "test";
+    std::string UserInfo = "test";
+    std::string OrderID = "test";
+    std::string ClOrdID = "test";
+    std::string ExecID = "test";
+    std::string ExecType = "test";
+    std::string OrdStatus = "test";
+    float LastPx = 0.0;
+    int LastQty = 0;
+    int LeavesQty = 0;
+    int CumQty = 0;
+    std::string Side = "test";
+    std::string AccountID = "test";
+    std::string BranchID = "test";
     Extend_Fields ExtendFields;
 };
 
@@ -156,25 +156,25 @@ public:
     int MsgType = MSGTYPE::CANCEL_ORDER_FAIL_REPORT;
     int BodyLength = 19;
 
-    int PartitionNo;
-    int ReportIndex;
-    std::string ApplID;
-    std::string ReportingPBUID;
-    std::string SubmittingPBUID;
-    std::string SecurityID;
-    std::string SecurityIDSource;
-    int OwnerType;
-    std::string ClearingFirm;
-    std::string TransactTime;
-    std::string UserInfo;
-    std::string ClOrdID;
-    std::string ExecID;
-    std::string OrigClOrdID;
-    std::string Side;
-    std::string OrdStatus;
-    int CxlRejReason;
-    std::string RejectText;
-    std::string OrderID;
+    int PartitionNo = 1;
+    int ReportIndex = 1;
+    std::string ApplID = "test";
+    std::string ReportingPBUID = "test";
+    std::string SubmittingPBUID = "test";
+    std::string SecurityID = "test";
+    std::string SecurityIDSource = "test";
+    int OwnerType = 1;
+    std::string ClearingFirm = "test";
+    std::string TransactTime = "test";
+    std::string UserInfo = "test";
+    std::string ClOrdID = "test";
+    std::string ExecID = "test";
+    std::string OrigClOrdID = "test";
+    std::string Side = "test";
+    std::string OrdStatus = "test";
+    int CxlRejReason = 1;
+    std::string RejectText = "test";
+    std::string OrderID = "test";
 };
 
 #endif
