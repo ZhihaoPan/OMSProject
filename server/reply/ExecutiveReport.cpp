@@ -66,7 +66,7 @@ void ExecutiveReportMessage::set_config(GatewayProto::Standard_Message* standard
 
     standard_message->set_allocated_standardheader(standard_header);
     standard_message->set_allocated_executive_report(executive_report);
-    spdlog::error("[debug] " + std::to_string(standard_message->executive_report().orderqty()) + standard_message->executive_report().ordstatus());
+    // spdlog::error("[debug] " + std::to_string(standard_message->executive_report().orderqty()) + standard_message->executive_report().ordstatus());
 }
 
 void ExecutiveReportMessage::show_config()

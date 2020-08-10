@@ -33,7 +33,7 @@ std::string construct_message(Message* message)
     return msg;
 }
 
-int parse_logon_content(const GatewayProto::Logon& logon, int id)
+int parse_logon_content(const GatewayProto::Logon& logon, int id, int sockfd)
 {
     // TODO:将recv_msg转化protobuf的对象
     int val = rand() % 2;
@@ -41,13 +41,15 @@ int parse_logon_content(const GatewayProto::Logon& logon, int id)
 
     if (val == 0)
     {
+        spdlog::info("[Server test sockfd: " + std::to_string(sockfd) + " ] reply logon success message.");
         LogonReplyMessage logon_reply_message(config);
         std::string send_msg = construct_message(&logon_reply_message);
         tcp_server.Send(send_msg, id);
 
     }
     else if (val == 1)
-    {    
+    {
+        spdlog::info("[Server test sockfd: " + std::to_string(sockfd) + " ] reply logon failed message.");
         LogoutReplyMessage logout_message(config);
         std::string send_msg = construct_message(&logout_message);
         tcp_server.Send(send_msg, id);
@@ -55,10 +57,10 @@ int parse_logon_content(const GatewayProto::Logon& logon, int id)
     return 0;
 }
 
-int parse_heartbeat_content(const GatewayProto::Heart_Beat& hb, int id)
+int parse_heartbeat_content(const GatewayProto::Heart_Beat& hb, int id, int sockfd)
 {
     // 如果是返回的心跳包信息就跳过
-    
+    spdlog::info("[Server test sockfd: " + std::to_string(sockfd) + " ] reply heartbeat message.");
     // Config config;
     // HeartBeatReportMessage heartbeat_message(config);
     // std::string send_msg = construct_message(&heartbeat_message);
@@ -66,7 +68,7 @@ int parse_heartbeat_content(const GatewayProto::Heart_Beat& hb, int id)
     return 0;
 }
 
-int parse_neworder_content(const GatewayProto::New_Order& no, int id)
+int parse_neworder_content(const GatewayProto::New_Order& no, int id, int sockfd)
 {
     Config config;
     // 分三种情况 拒绝 接受全部成交 接受部分成交
@@ -74,7 +76,7 @@ int parse_neworder_content(const GatewayProto::New_Order& no, int id)
     if (val == 0)
     {
         // 拒绝订单
-        spdlog::info("[NewOrder Reply] Rejected.");
+        spdlog::info("[NewOrder Reply sockfd: " + std::to_string(sockfd) + " ] Rejected.");
         ExecutiveReportConfig er_config(config);
         er_config.ExecType = "Rejected";
         er_config.OrdStatus = "Rejected";
@@ -86,7 +88,7 @@ int parse_neworder_content(const GatewayProto::New_Order& no, int id)
     else if (val == 1)
     {
         // 接受全部成交
-        spdlog::info("[NewOrder Reply] New Order accepted.");
+        spdlog::info("[NewOrder Reply sockfd: " + std::to_string(sockfd) + " ] New Order accepted.");
         ExecutiveReportConfig er_config(config);
         er_config.ExecType = "New";
         er_config.OrdStatus = "New";
@@ -97,7 +99,7 @@ int parse_neworder_content(const GatewayProto::New_Order& no, int id)
         tcp_server.Send(send_msg, id);
 
         // usleep(10000);
-        spdlog::info("[NewOrder Reply] All Filled. last send: "  + std::to_string(send_msg.length()) + send_msg);
+        spdlog::info("[NewOrder Reply sockfd: " + std::to_string(sockfd) + " ] All Filled."); //  last send: "  + std::to_string(send_msg.length()) + send_msg);
         TransactionReportConfig tr_config(config);
         tr_config.ExecType = "Trade";
         tr_config.OrdStatus = "Filled";
@@ -118,14 +120,14 @@ int parse_neworder_content(const GatewayProto::New_Order& no, int id)
 	return 0;
 }
 
-int parse_cancelorder_content(const GatewayProto::Cancel_Order& co, int id)
+int parse_cancelorder_content(const GatewayProto::Cancel_Order& co, int id, int sockfd)
 {
-    
+    return 0;
 }
 
-int parse_retransmit_content(const GatewayProto::Retransmission_Report& rr, int id)
+int parse_retransmit_content(const GatewayProto::Retransmission_Report& rr, int id, int sockfd)
 {
-
+    return 0;
 }
 
 int send_heartbeat_message(void* arg)
@@ -145,35 +147,39 @@ void* send_client(void* arg)
     // 遍历Message数组，
     struct SocketMessage *socket_message = (struct SocketMessage*) arg;
 
-    spdlog::info("[Server test] GetMessage From id:  " + to_string(socket_message->id));
+    spdlog::info("[Server test sockfd: " + std::to_string(socket_message->sockfd) + "] GetMessage From id:  " + to_string(socket_message->id));
 
-    if(!tcp_server.is_online() || tcp_server.get_last_closed_socket() == socket_message->id || socket_message->id == -1) 
+    if(!tcp_server.is_online() || socket_message->id == -1) // tcp_server.get_last_closed_socket() == socket_message->id || 
     {
+        spdlog::info("[Server test sockfd: " + std::to_string(socket_message->sockfd) + "] send_client thread exit \
+                    , for " + "is_online" + std::to_string(tcp_server.is_online()) + 
+                    " ,id ==" + std::to_string(socket_message->id));
+        pthread_exit(NULL);
         return 0;
     }
     GatewayProto::Standard_Message recv_sm;
     
     recv_sm.ParseFromString(socket_message->message);
-    spdlog::error(recv_sm.new_order().orderqty());
+
+    // spdlog::error(recv_sm.new_order().orderqty());
+
     // 获取Message的头部 判断是哪个字段
     GatewayProto::Standard_Header recv_sh;
     recv_sh = recv_sm.standardheader();
 
-    
-    
-    int res = 0;
+    // int res = 0;
     if (recv_sh.msgtype() == MSGTYPE::LOGON)
     {
-        parse_logon_content(recv_sm.logon(), socket_message->id);
+        parse_logon_content(recv_sm.logon(), socket_message->id, socket_message->sockfd);
     }
     else if (recv_sh.msgtype() == MSGTYPE::HEART_BEAT)
     {
         // 接受心跳包进行处理，接受的到了心跳包就
-        parse_heartbeat_content(recv_sm.heart_beat(), socket_message->id);
+        parse_heartbeat_content(recv_sm.heart_beat(), socket_message->id, socket_message->sockfd);
     }
     else if (recv_sh.msgtype() == MSGTYPE::NEW_ORDER)
     {
-        parse_neworder_content(recv_sm.new_order(), socket_message->id);
+        parse_neworder_content(recv_sm.new_order(), socket_message->id, socket_message->sockfd);
     }
     else if (recv_sh.msgtype() == MSGTYPE::CANCEL_ORDER)
     {
@@ -238,21 +244,19 @@ void* received(void* arg)
     while(1)
     {
         v_socket_message = tcp_server.getMessage();
-        // 
         
         for(int i = 0; i < (int)v_socket_message.size(); i++) 
         {
-            spdlog::error("[debug] sockfd: " + std::to_string(i) + " is running: "  + std::to_string(v_socket_message[i]->is_running));
             if(v_socket_message[i]->message != "")
             {
                 if(!v_socket_message[i]->is_running) 
                 {
                     v_socket_message[i]->is_running = true;
-                    spdlog::error("[debug] sockfd: " + std::to_string(i) + " start.");
+                    spdlog::info("[Server test sockfd: " + std::to_string(v_socket_message[i]->sockfd) + "] start.");
                     // TODO:处理消息线程
                     if( pthread_create(&send_thread[num_message], NULL, send_client, (void *) v_socket_message[i]) != 0) 
                     {
-                        spdlog::error("[Server] server creating worker thread failed.");
+                        spdlog::error("[Server test] server creating worker thread failed.");
                     }
                     num_message++;
                     
@@ -267,10 +271,9 @@ void* received(void* arg)
             }
             else
             {
-                spdlog::error("[debug] v_socket_message[i]->message == NULL sockfd: " + std::to_string(v_socket_message[i]->id) + " is running.");
+                spdlog::error("[Server test] v_socket_message->message == NULL sockfd: " + std::to_string(v_socket_message[i]->sockfd) + " is running.");
             }
         }
-        // spdlog::error("Message.size()" + std::to_string(v_socket_message.size()) + "num_message: " + std::to_string(num_message));
         usleep(2000000);
     }
     return 0;

@@ -18,6 +18,10 @@ bool TCPClient::setup()
             return -1;
         }
     }
+    // setsockopt
+    int reuse = 1;
+    setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+    
     
     if ((signed)inet_addr(address.c_str()) == -1)
     {

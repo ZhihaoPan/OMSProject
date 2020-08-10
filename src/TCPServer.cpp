@@ -32,7 +32,8 @@ void* TCPServer::Task(void* arg)
             // 正常处理数据
             msg[res] = '0';
             // socket_message->message.assign(msg,res);
-            spdlog::info("[TCPServer] (id: " + std::to_string(socket_message->id) + ")show message" + std::string(msg) );
+            spdlog::info("[TCPServer sockfd: " + std::to_string(socket_message->sockfd) + "] \
+                            socket recv message , show message: " + std::string(msg) );
             socket_message->message = std::string(msg);
             is_onlined = true;
             
@@ -62,11 +63,11 @@ void* TCPServer::Task(void* arg)
             
             if (res == 0)
             {
-                spdlog::info("[TCPServer] Client try to cloes socket: " + std::to_string(socket_message->id));
+                spdlog::info("[TCPServer sockfd: " + std::to_string(socket_message->sockfd) + "] Client try to cloes socket: " + std::to_string(socket_message->id));
                 // 客户端申请正常断开连接，这里res就会为0
                 last_closed_id = socket_message->id;
                 close(socket_message->sockfd);
-                is_onlined = false;
+                // is_onlined = false;
 
                 int id = last_closed_id;
                 
@@ -86,7 +87,7 @@ void* TCPServer::Task(void* arg)
             }
             else
             {
-                spdlog::error("[TCPServer] recv failed.");
+                spdlog::error("[TCPServer sockfd: " + std::to_string(socket_message->sockfd) + "] recv failed.");
                 break;
             }
         }  // if res
@@ -168,12 +169,12 @@ int TCPServer::accepted()
 
     if (socket_message->sockfd < 0)
     {
-        spdlog::error("[TCPServer] Connecetion failed.");
+        spdlog::error("[TCPServer sockfd: " + std::to_string(socket_message->sockfd) + "] Connecetion failed.");
         return -1;
     }
     newsockfd.push_back(socket_message);
 
-    spdlog::info("[TCPServer] accept new client socket: " + std::to_string(socket_message->sockfd));
+    spdlog::info("[TCPServer sockfd: " + std::to_string(socket_message->sockfd) + "] accept new client socket: " + std::to_string(socket_message->sockfd));
     
     // 对方异常断开处理
     pthread_create(&server_thread[num_client], NULL, &Task, (void*)newsockfd[num_client]);
