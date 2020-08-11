@@ -12,6 +12,44 @@ pthread_mutex_t TCPServer::mt_timeout = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t TCPServer::mt_message = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t TCPServer::cond = PTHREAD_COND_INITIALIZER;
 
+
+int setnonblocking(int sockfd)
+{
+    int old_option = fcntl(sockfd, F_GETFD);
+    int new_option = old_option | O_NONBLOCK;
+    fcntl(sockfd, new_option);
+    return old_option;
+}
+
+int addfd(int sockfd, int epollfd, bool et)
+{
+    epoll_event ep_e;
+    ep_e.data.fd = sockfd;
+    ep_e.events = EPOLLIN | EPOLLRDHUP | EPOLLET;
+    if (et)
+    {
+        ep_e.events |= EPOLLONESHOT;
+    }
+    epoll_ctl(epollfd, EPOLL_CTL_ADD, sockfd, &ep_e);
+    setnonblocking(sockfd);
+    return ep_e.events;
+}
+
+int removefd(int sockfd, int epollfd)
+{
+    epoll_ctl(epollfd, EPOLL_CTL_DEL, sockfd, 0);
+    close (sockfd);
+}
+
+int modifyfd(int sockfd, int epollfd, int event)
+{
+    epoll_event ep_e;
+    ep_e.data.fd = sockfd;
+    ep_e.events = event | EPOLLRDHUP | EPOLLET | EPOLLONESHOT;
+    epoll_ctl(epollfd, EPOLL_CTL_MOD, sockfd, &ep_e);
+    return 0;
+}
+
 void* TCPServer::Task(void* arg)
 {
     int res;
@@ -104,7 +142,7 @@ void* TCPServer::Task(void* arg)
     return 0;
 }
 
-int TCPServer::setup(int port, std::string ip, std::map<int, int> opts)
+int TCPServer::setup(int port, std::string ip)
 {
     is_onlined = false;
     last_closed_id = -1;
@@ -127,14 +165,9 @@ int TCPServer::setup(int port, std::string ip, std::map<int, int> opts)
     server_address.sin_port   = htons(port);
     inet_pton(AF_INET, ip.c_str(), &server_address.sin_addr);
     
-    for (auto iter : opts)
-    {
-        if (setsockopt(sockfd, SOL_SOCKET, iter.first, (char*)&iter.second, sizeof(iter.second)) < 0)
-        {
-            spdlog::error("[TCPServer] set socket option failed.");
-            return -1;
-        }
-    }
+    // setsockopt
+    
+
     
     if (bind(sockfd, (struct sockaddr*)&server_address, sizeof(server_address)) < 0)
     {

@@ -1,5 +1,8 @@
+#include <random>
+#include <iostream>
+#include <map>
+#include <spdlog/spdlog.h>
 #include "../protobuf/Gateway.pb.h"
-#include "../src/TCPServer.h"
 #include "reply/LoginReply.h"
 #include "reply/LogoutReply.h"
 #include "reply/CancelOrderReply.h"
@@ -9,10 +12,10 @@
 #include "User.h"
 #include "config.h"
 #include "Message.h"
-#include <random>
-#include <iostream>
-#include <map>
-#include <spdlog/spdlog.h>
+#include "Lockers.h"
+#include "Threadpool.h"
+#include "TCPServer.h"
+
 using namespace std;
 
 TCPServer tcp_server;
@@ -244,7 +247,7 @@ void* received(void* arg)
     while(1)
     {
         v_socket_message = tcp_server.getMessage();
-        
+        spdlog::error(v_socket_message.size());
         for(int i = 0; i < (int)v_socket_message.size(); i++) 
         {
             if(v_socket_message[i]->message != "")
@@ -286,9 +289,9 @@ int main(int argc, char *argv[])
         cout << "Usage:./server_test port" << endl;
     }
     pthread_t receive_thread;
-    map<int, int> opts = { {SO_REUSEPORT, 1}, {SO_REUSEADDR, 1} };
+    ThreadPool<TCPServer> thread_pool(6, 10000);
     
-    if(tcp_server.setup(atoi(argv[1]), "127.0.0.1", opts) == 0) 
+    if(tcp_server.setup(atoi(argv[1]), "127.0.0.1") == 0) 
     {
         if(pthread_create(&receive_thread, NULL, received, (void *)0) == 0)
         {
